@@ -1,69 +1,178 @@
-.TH man 3 "19 April 2022" "ALX Project" "_printf man page"
-.SH NAME
+." Process this file with
+." groff -man -Tascii man_3_printf
+." Render on terminal with
+." man ./man_3_printf
+."
+.TH man 3 "28 July 2021" "v 1.0" "_printf man page"
+
+.SH Name
 .B _printf
-- Formatted output conversion.
-.SH SYNOPSIS
-.B #include "main.h"
+- prints formatted output of arguments
 
-.B int _printf(const char *
-.I format
-.B , ...)
-.SH DESCRIPTION
-.B _printf()
-Prints to standard output under the control of a 
-.I format
-string that specifies how subsequent arguments are converted for output. 
-.SH Return value
-On successful return, these functions return the number of characters printed, excluding the null byte used to end output to strings.
-
-If an output error is encountered, a negative value is returned.
-.SH Format of the format string
-The format string is composed of 0 or more directives (ordinary characters that are not %), which are copied to the output stream. The format string is also composed of conversion specifications, each of which result in fetching zero or more subsequent arguments. Each conversion specification is introduced by the character % and ends with the conversion specifier.
-The argument must correspond properly with the conversion specifier. By default, the arguments are used in the order given.
-.SH The conversion specifier
-A character that specifies the type of conversion to be applied. The conversion specifiers and their meanings are:
-.TP
-.BR c
-The int argument is converted to an unsigned char, then the resulting character is written
-.TP
-.B s
-The const char * argument is expected to be a pointer to an array of character type (pointer to a string). Characters from the array are written up to a terminating null byte, but do ot include the terminating null byte.
-.TP
-.B S
-Prints a string. Non printable characters are printed as "\x" followed by their ASCII values in two digit hexadecimal
-.TP
-.B d, i
-The int argument is converted to signed decimal notation.
-.TP
-.B x, X
-The unsigned int argument is converted to unsigned lowercase hexadecimal notation(x), or unsigned uppercase hexadecimal notation(X).
-.TP
-.B u
-The unsigned int argument is converted to unsigned decimal notation
-.TP
-.B o, b
-The unsigned int argument is converted to unsigned octal notation(o) or binary notation(b).
-.TP
-.B p
-Address is printed in hexadecimal.
-.TP
-.B r
-Prints a string in reverse.
-.TP
-.B R
-Prints a string converted to rot13
-.TP
-.B %
-A '%' is written but no argument is converted. The complete version specification is '%%'
-.SH EXAMPLE
-To print the day of the year, where weekday and month are pointers to strings and day and year are integers:
-
+.SH Synopsis
 #include "main.h"
 
-_printf("%s, %s %d, %d\\n", weekday, month, day, year);
-.SH SEE ALSO
-.I printf(3)
-.SH BUGS
-No known bugs.
-.SH AUTHOR
-El Pacific Binagha, Willy Pascal Willy
+int _printf(const char *format, ...);
+
+.SH Description
+The
+.B _printf
+function produces output according to a
+.IB format
+as described below.
+
+.SS Return value
+This function returns the total number of characters printed with the exception of the null byte (used to terminate strings).
+
+.SS The flag characters
+The character % is followed by zero or more of the following flags:
+.RS
+.SS
+.I
+#
+The value should be converted to an alternate form
+.RS
+.SS
+.I
+0
+The value should be padded with zeros rather than spaces.
+.RS
+.SS
+.I
+-
+The converted value should be left aligned on the field boundary. The default is right alignment on the field boundary.
+.RS
+.SS
+.I
+" "
+(a space) Signifies that a blank space be left before a positive number that is produced by a signed conversion
+.RS
+.SS
+.I
++
+A sign (+ or -) should always be placed before a number produced by a signed conversion, which by default was shown only for negative numbers.
+
+.SS The field width
+This is an optional decimal digit string (with nonzero first digit) that specifies the
+minimum field width. The converted value is padded with spaces on the left (or right if the left-alignment flag has been given)
+if the converted value has fewer characters than the field width. One may write * to
+specify that the field width is given in the next argument, which must be an integer type. The field
+width does not cause truncation of the converted value. The converted value must be printed
+before any width adjustments are made.
+
+.SS The precision
+This is an optional precision value that is given as a period ('.') followed by an optional decimal digit string.
+One may write '*' instead of a decimal digit to signify that the precision is given as an integer in the next argument.
+The precision is taken to be zero if just '.' is provided. The precision specifies the minimum
+number of digits to appear for d, i, o, u, x, and X conversions, or the maximum number of
+characters to be printed from a string for s conversions.
+
+.SS The length modifier
+In this context, we'll say integer conversion to mean conversion by one of the specifiers
+.B d
+,
+.B i
+,
+.B o
+,
+.B u
+,
+.B x
+, or
+.B X
+.RS
+.SS
+.I
+h
+Modifies the following integer to be a short signed or unsigned int
+.RS
+.SS
+.I
+l
+Modifies the following integer to be a long signed or unsigned int
+
+.SS The conversion specifier
+A character that specifies the type of conversion to be applied. The supported conversion specifiers and their meanings are:
+.RS
+.SS
+.I
+c
+A conversion specifier that converts an int argument to a character and writes it.
+.RS
+.SS
+.I
+s
+A conversion specifier that writes the characters of a const char * argument
+up to (but not including) a terminating null byte ('\\0'). If a precision is specified,
+no more than the specified number of characters are written and a null byte does not need to be present.
+If the precision is not specified or is greater than the size of the array, a null byte must be present in the array.
+.RS
+.SS
+.I
+d, i
+The int argument is converted to signed decimal notation. The precision,
+if any, specifies the minimum number of digits that must appear; the converted value is paaded on the left with zeros if the value's length is less than the precision.
+When 0 is printed with an explicit precision 0, the output is empty.
+.RS
+.SS
+.I
+o, u, x, X
+The unsigned int argument is converted to unsigned octal (o), unsigned decimal (u), or unsigned
+hexadecimal (x and X) notation. The letters abcdef are used for x conversions, whilst the upper case equivalent is used for X conversions. The precision,
+if any, specifies the minimum number of digits that must appear; the converted value is paaded on the left with zeros if the value's length is less than the precision.
+.RS
+.SS
+.I
+%
+A '%' is written and there is no conversion of any argument.
+.RS
+.SS
+.I
+p
+A void * pointer argument is printed in hexadecimal (as if by
+.SB %#x
+).
+.RS
+.SS
+.I
+b
+A custom conversion specifier that prints the binary representation of an unsigned int.
+.RS
+.SS
+.I
+R
+A custom conversion specifier that prints the rot13 translation of a string.
+.RS
+.SS
+.I
+r
+A custom conversion specifier that prints the reverse of a string.
+.RS
+.SS
+.I
+S
+This is a custom conversion specifier that prints a string and the hexadecimal representation of non-printable characters in it starting with \\x (with the exception of the null byte).
+
+.SH
+Example
+To print some weather details:
+.PP
+.nf
+.RS
+#include "holberton.h"
+_printf("Wind: %d%s and Precipitation: %d%%\\n", 28, "km/h", 0x1a);
+.RE
+.fi
+.EX
+
+.SH
+Authors
+Written by Bezaleel Olakunori and Obed Amoako
+
+.SH Reporting Bugs
+Report
+.SB _printf
+bugs to <https://github.com/Obed101/printf/issues>
+
+.SH See Also
+https://linux.die.net/man/3/scanf
